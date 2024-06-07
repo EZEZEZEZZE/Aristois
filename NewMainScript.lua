@@ -105,21 +105,6 @@ local BridgeDuelgame = table.find(bridgeduelidtable, placeid)
 shared.AristoisPrivate = true
 shared.AristoisPlaceId = ""
 
-local gameScripts = {
-    [6872274481] = {
-        public = "https://raw.githubusercontent.com/EZEZEZEZZE/Aristois/main/Games/6872274481.lua",
-        private = "Aristois/Games/6872274481.lua"
-    },
-    [11630038968] = {
-        public = "https://raw.githubusercontent.com/EZEZEZEZZE/Aristois/main/Games/11630038968.lua",
-        private = "Aristois/Games/11630038968.lua"
-    },
-    Universal = {
-        anygamepublic = "https://raw.githubusercontent.com/EZEZEZEZZE/Aristois/main/Universal.lua",
-        anygameprivate = "Aristois/Universal.lua"
-    }
-}
-
 if BedWarsgame then 
     shared.AristoisPlaceId = 6872274481
 elseif BridgeDuelgame then
@@ -135,9 +120,9 @@ end
 
 if shared.AristoisPlaceId == 6872274481 or shared.AristoisPlaceId == 11630038968 then
     if shared.AristoisPrivate then
-        loadstring(readfile(gameScripts[shared.AristoisPlaceId].private))()
+        loadstring(readfile("Aristois/Games/" .. shared.AristoisPlaceId .. ".lua"))()
     else
-        loadstring(game:HttpGet(gameScripts[shared.AristoisPlaceId].public))()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/EZEZEZEZZE/Aristois/main/Games/" .. shared.AristoisPlaceId .. ".lua"))()
     end
 else
     local placeFilePrivate = "Aristois/Games/" .. tostring(shared.AristoisPlaceId) .. ".lua"
@@ -145,9 +130,9 @@ else
         loadstring(readfile(placeFilePrivate))()
     else
         if shared.AristoisPrivate then
-            loadstring(readfile(gameScripts.Universal.anygameprivate))()
+            loadstring(readfile("Aristois/Universal.lua"))()
         else
-            loadstring(game:HttpGet(gameScripts.Universal.anygamepublic))()
+            loadstring(game:HttpGet("https://raw.githubusercontent.com/EZEZEZEZZE/Aristois/main/Universal.lua"))()
         end
     end
 end
