@@ -1,40 +1,23 @@
-repeat
-    task.wait()
-until game:IsLoaded()
-
-local function fileExists(filePath)
-    local success, _ = pcall(function() return readfile(filePath) end)
-    return success
-end
-
-local function downloadFile(url, filePath)
-    local response = game:HttpGet(url, true)
-    if response then
-        writefile(filePath, response)
-    end
-end
-
-if not isfolder("Aristois") then
-    makefolder("Aristois")
-end
-
-if not isfolder("Aristois/Games") then
-    makefolder("Aristois/Games")
-end
+local queueonteleport = (syn and syn.queue_on_teleport) or queue_for_teleport or queue_on_teleport or queueonteleport
 
 local function fetchLatestCommit()
     local response = game:HttpGet("https://api.github.com/repos/EZEZEZEZZE/Aristois/commits")
-    local commits = game.HttpService:JSONDecode(response)
+    local commits = game:GetService("HttpService"):JSONDecode(response)
     if commits and #commits > 0 then
         return commits[1].sha
     end
     return nil
 end
 
+local function fileExists(filePath)
+    local success, _ = pcall(function() return readfile(filePath) end)
+    return success
+end
+
 local function updateAvailable()
     local latestCommit = fetchLatestCommit()
     if latestCommit then
-        local lastCommitFile = "Aristois/last_commit.txt"
+        local lastCommitFile = "Aristois/commithash.txt"
         if fileExists(lastCommitFile) then
             local lastCommit = readfile(lastCommitFile)
             return lastCommit ~= latestCommit, latestCommit
@@ -45,13 +28,39 @@ local function updateAvailable()
     return false, nil
 end
 
+if not isfolder("Aristois") then
+    makefolder("Aristois")
+end
+
+if not isfolder("Aristois/Games") then
+    makefolder("Aristois/Games")
+end
+
+if not isfolder("Aristois/Librarys") then
+    makefolder("Aristois/Librarys")
+end
+
+if not isfolder("Aristois/assets") then
+    makefolder("Aristois/assets")
+end
+
+local bedwarsidtable = {
+    6872274481,
+    8444591321,
+    8560631822
+}
+
+local bridgeduelidtable = {
+    11630038968
+}
+
 local function updateFiles(commitHash)
     local baseUrl = "https://raw.githubusercontent.com/EZEZEZEZZE/Aristois/" .. commitHash .. "/"
     local filesToUpdate = {
         "NewMainScript.lua", 
         "GuiLibrary.lua", 
         "Universal.lua",
-        "Games/6872274481.lua",
+        "Librarys/Whitelist.lua",
         "Games/11630038968.lua"
     }
     for _, filePath in ipairs(filesToUpdate) do
@@ -61,10 +70,78 @@ local function updateFiles(commitHash)
             downloadFile(fileUrl, localFilePath)
         end
     end
-    writefile("Aristois/last_commit.txt", commitHash)
+    writefile("Aristois/commithash.txt", commitHash)
+end
+
+local function downloadFile(url, filePath)
+    local response = game:HttpGet(url, true)
+    if response then
+        writefile(filePath, response)
+    end
+end
+
+local BedWarsgame = table.find(bedwarsidtable, placeid)
+local BridgeDuelgame = table.find(bridgeduelidtable, placeid)
+
+shared.AristoisPrivate = true
+shared.AristoisPlaceId = ""
+
+local gameScripts = {
+    [6872274481] = {
+        public = "https://raw.githubusercontent.com/EZEZEZEZZE/Aristois/main/Games/6872274481.lua",
+        private = "Aristois/Games/6872274481.lua"
+    },
+    [11630038968] = {
+        public = "https://raw.githubusercontent.com/EZEZEZEZZE/Aristois/main/Games/11630038968.lua",
+        private = "Aristois/Games/11630038968.lua"
+    },
+    Universal = {
+        anygamepublic = "https://raw.githubusercontent.com/EZEZEZEZZE/Aristois/main/Universal.lua",
+        anygameprivate = "Aristois/Universal.lua"
+    }
+}
+
+if BedWarsgame then 
+    shared.AristoisPlaceId = 6872274481
+elseif BridgeDuelgame then
+    shared.AristoisPlaceId = 11630038968
+else
+    shared.AristoisPlaceId = game.PlaceId
+end
+
+if shared.AristoisPlaceId == 6872274481 or shared.AristoisPlaceId == 11630038968 then
+    if shared.AristoisPrivate then
+        loadstring(readfile(gameScripts[shared.AristoisPlaceId].private))()
+    else
+        loadstring(game:HttpGet(gameScripts[shared.AristoisPlaceId].public))()
+    end
+else
+    local placeFilePrivate = "Aristois/Games/" .. tostring(shared.AristoisPlaceId) .. ".lua"
+    if fileExists(placeFilePrivate) then
+        loadstring(readfile(placeFilePrivate))()
+    else
+        if shared.AristoisPrivate then
+            loadstring(readfile(gameScripts.Universal.anygameprivate))()
+        else
+            loadstring(game:HttpGet(gameScripts.Universal.anygamepublic))()
+        end
+    end
+end
+
+if queueonteleport then
+    queueonteleport('loadstring(readfile("Aristois/NewMainScript.lua"))()')
 end
 
 local updateAvailable, latestCommit = updateAvailable()
 if updateAvailable then
     updateFiles(latestCommit)
+end
+
+while true do
+    if fileExists("Aristois/NewMainScript.lua") then
+        loadstring(readfile("Aristois/NewMainScript.lua"))()
+        break
+    else
+        wait(1)
+    end
 end
