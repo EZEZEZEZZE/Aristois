@@ -1,5 +1,13 @@
 local queueonteleport = (syn and syn.queue_on_teleport) or queue_for_teleport or queue_on_teleport or queueonteleport
 
+if not isfolder("Aristois/Librarys") then
+    makefolder("Aristois/Librarys")
+end
+
+if not isfolder("Aristois/assets") then
+    makefolder("Aristois/assets")
+end
+
 local function fetchLatestCommit()
     local response = game:HttpGet("https://api.github.com/repos/EZEZEZEZZE/Aristois/commits")
     local commits = game:GetService("HttpService"):JSONDecode(response)
