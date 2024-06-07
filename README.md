@@ -1,8 +1,8 @@
---[[
-  Reads "Aristois/Games/"
-  Turning it off reads off this 
-  "https://raw.githubusercontent.com/EZEZEZEZZE/Aristois/main/Games/"
-]]
+# Loadstring
+```lua
+pcall(function() loadstring(game:HttpGet('https://raw.githubusercontent.com/EZEZEZEZZE/Aristois/main/NewMainScript.lua'))() end)
+```
 
-shared.ReadFile = true
-loadstring(game:HttpGet("https://raw.githubusercontent.com/EZEZEZEZZE/Aristois/main/NewMainScript.lua", true))()
+# Aristois
+Script for Roblox, fully undetectable,
+
