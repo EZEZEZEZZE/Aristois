@@ -4,6 +4,10 @@ if not isfolder("Aristois") then
     makefolder("Aristois")
 end
 
+if not isfolder("Aristois/Games") then
+    makefolder("Aristois/Games")
+end
+
 if not isfolder("Aristois/Librarys") then
     makefolder("Aristois/Librarys")
 end
@@ -47,22 +51,6 @@ local function updateAvailable()
     return false, nil
 end
 
-if not isfolder("Aristois") then
-    makefolder("Aristois")
-end
-
-if not isfolder("Aristois/Games") then
-    makefolder("Aristois/Games")
-end
-
-if not isfolder("Aristois/Librarys") then
-    makefolder("Aristois/Librarys")
-end
-
-if not isfolder("Aristois/assets") then
-    makefolder("Aristois/assets")
-end
-
 local bedwarsidtable = {
     6872274481,
     8444591321,
@@ -102,7 +90,7 @@ end
 local BedWarsgame = table.find(bedwarsidtable, placeid)
 local BridgeDuelgame = table.find(bridgeduelidtable, placeid)
 
-shared.AristoisPrivate = true
+shared.ReadFile = true
 shared.AristoisPlaceId = ""
 
 if BedWarsgame then 
@@ -119,7 +107,7 @@ if updateAvailable then
 end
 
 if shared.AristoisPlaceId == 6872274481 or shared.AristoisPlaceId == 11630038968 then
-    if shared.AristoisPrivate then
+    if shared.ReadFile then
         loadstring(readfile("Aristois/Games/" .. shared.AristoisPlaceId .. ".lua"))()
     else
         loadstring(game:HttpGet("https://raw.githubusercontent.com/EZEZEZEZZE/Aristois/main/Games/" .. shared.AristoisPlaceId .. ".lua"))()
@@ -129,7 +117,7 @@ else
     if fileExists(placeFilePrivate) then
         loadstring(readfile(placeFilePrivate))()
     else
-        if shared.AristoisPrivate then
+        if shared.ReadFile then
             loadstring(readfile("Aristois/Universal.lua"))()
         else
             loadstring(game:HttpGet("https://raw.githubusercontent.com/EZEZEZEZZE/Aristois/main/Universal.lua"))()
