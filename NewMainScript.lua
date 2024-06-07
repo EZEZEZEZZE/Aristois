@@ -1,5 +1,9 @@
 local queueonteleport = (syn and syn.queue_on_teleport) or queue_for_teleport or queue_on_teleport or queueonteleport
 
+if not isfolder("Aristois") then
+    makefolder("Aristois")
+end
+
 if not isfolder("Aristois/Librarys") then
     makefolder("Aristois/Librarys")
 end
@@ -20,6 +24,13 @@ end
 local function fileExists(filePath)
     local success, _ = pcall(function() return readfile(filePath) end)
     return success
+end
+
+local function downloadFile(url, filePath)
+    local response = game:HttpGet(url, true)
+    if response then
+        writefile(filePath, response)
+    end
 end
 
 local function updateAvailable()
@@ -117,6 +128,11 @@ else
     shared.AristoisPlaceId = game.PlaceId
 end
 
+local updateAvailable, latestCommit = updateAvailable()
+if updateAvailable then
+    updateFiles(latestCommit)
+end
+
 if shared.AristoisPlaceId == 6872274481 or shared.AristoisPlaceId == 11630038968 then
     if shared.AristoisPrivate then
         loadstring(readfile(gameScripts[shared.AristoisPlaceId].private))()
@@ -138,18 +154,4 @@ end
 
 if queueonteleport then
     queueonteleport('loadstring(readfile("Aristois/NewMainScript.lua"))()')
-end
-
-local updateAvailable, latestCommit = updateAvailable()
-if updateAvailable then
-    updateFiles(latestCommit)
-end
-
-while true do
-    if fileExists("Aristois/NewMainScript.lua") then
-        loadstring(readfile("Aristois/NewMainScript.lua"))()
-        break
-    else
-        wait(1)
-    end
 end
