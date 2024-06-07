@@ -64,15 +64,9 @@ local function updateFiles(commitHash)
     }
     for _, filePath in ipairs(filesToUpdate) do
         local localFilePath = "Aristois/" .. filePath
-        if not fileExists(localFilePath) then
+        if not fileExists(localFilePath) or updateAvailable then
             local fileUrl = baseUrl .. filePath
             downloadFile(fileUrl, localFilePath)
-        elseif fileExists(localFilePath) then
-            local fileContent = readfile(localFilePath)
-            if not fileContent:find("--do not update.") then
-                local fileUrl = baseUrl .. filePath
-                downloadFile(fileUrl, localFilePath)
-            end
         end
     end
     writefile("Aristois/last_commit.txt", commitHash)
