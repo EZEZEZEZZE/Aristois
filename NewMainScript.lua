@@ -22,6 +22,14 @@ if not isfolder("Aristois/Games") then
     makefolder("Aristois/Games")
 end
 
+if not isfolder("Aristois/Librarys") then
+    makefolder("Aristois/Librarys")
+end
+
+if not isfolder("Aristois/assets") then
+    makefolder("Aristois/assets")
+end
+
 local function fetchLatestCommit()
     local response = game:HttpGet("https://api.github.com/repos/EZEZEZEZZE/Aristois/commits")
     local commits = game.HttpService:JSONDecode(response)
@@ -51,7 +59,7 @@ local function updateFiles(commitHash)
         "NewMainScript.lua", 
         "GuiLibrary.lua", 
         "Universal.lua",
-        "Games/6872274481.lua",
+        "Librarys/Whitelist.lua",
         "Games/11630038968.lua"
     }
     for _, filePath in ipairs(filesToUpdate) do
